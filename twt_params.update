@@ -1,0 +1,137 @@
+
+ Global parameters 
+Operational mode = 1
+ Geometry
+Streamer (1), OBC / VSP(2) = 1
+
+Timestep increment (s) = 0.004
+Grid spacing (m)  = 12.5
+NUM_SHOTS = 70
+SHOT_INCR (grid pts) = -4
+Model width (in grid pts.) = 2001
+Model depth (in grid pts.) = 601
+No. of recorded timesteps = 1200
+No. of iterations = 2
+Padding = 0
+
+ Forward modelling parameters 
+P-wave starting model = 2d_vp.vm
+S-wave starting model = 2d_vs.vm
+
+Surface type  = 0
+Source type  = 4
+Source file = source.sign 
+Dominant source freq. (Hz)= 7.0
+Source temporal shift = 0
+Source polarity reversal = 0
+
+Rcvr-depth pairs (grid pts.) = hydr_file.hydr
+Shot-depth pairs (grid pts.) = shot_file.shot
+Survey WB-depth pairs file = sea_depth_file.sea
+Survey Vp water = 1500
+
+FIRST_SHOT_GLOBAL_XCOORD (grid pts.) = 1205
+FIRST_OBC_RCVR_GLOBAL_XCOORD (grid pts.) = -4
+NUM_OBC_RCVRS = 1200
+OBC_RCVR_INCR (grid pts.) = -1
+
+Use expanding box strategy = 0
+Record wavefield snapshots = 1
+
+Timestep of first snapshot = 100
+Time increment for snapshots = 100
+Number of snapshots = 30
+
+Output hydrophone component = 0
+
+ Inversion parameters 
+
+Inversion component(s) (1P 2Z 3XZ) = 1
+
+Boundary storage io option = 0
+Number of blocks for io option = 7
+
+Inversion type = 5
+P & S linked = 0
+Commutation P to S = 10 
+Gradient type  = 1
+Gradient dimension  = 2 
+
+Gradient top cut-off (grid pts.) = 61
+Gradient top taper (grid pts.)= 10
+Gradient bottom cut-off (grid pts.) = 10
+Gradient bottom taper (grid pts.)= 10
+Gradient shot proximety cut-off (grid pts.) = 61
+Gradient shot taper (grid pts.) = 10
+Gradient smoothing = 0 
+
+Horizontal gradient smoothing (grid pts.) = 0 
+Vertical gradient smoothing (grid pts.) = 0
+
+filt_data = 0
+filter source = 0
+Start filter frequency = 8
+Final filter frequency = 16
+tpr_wdth = 1.0
+filter steps = 2
+
+Gradient perturbation strength = 10.00000 
+
+ Model parameters 
+Dimension of starting model  = 2 
+Dimension of true model  = 2
+Output model  = 4
+Log gradients  = 1
+
+Minimum S-wave velocity = 0.0
+
+ Data parameters 
+
+Shot increment before logging = 1
+
+Directory for data = .
+Project name (4 characters) = T002
+FFID for first shot in inversion = 1001
+FFID increment number = 1
+
+ Shot equalisation number, 1 synthetic, x real
+
+File, 0, or single, 1, shot norm value(s) = 1
+Shot-normalisation pairs in = shot_norm_file
+Equalisation value = 1
+
+ Streamer normalisation analysis
+
+Normalisation Channel = 1
+Time minimum (steps) = 1
+Time maximum (steps) = 500
+
+ OBC normalisation analysis
+
+WB time window length (ms) = 50
+
+Apply a top mute (from values read from a file) = 0
+Apply a bottom mute (from values read from a file) = 0
+
+Inner trace mute (HORZ,U) = 0
+Trace temporal top-mute (HORZ,U) = 0
+Top-mute time at zero offset (HORZ,U) = 0
+Top-mute moveout with offset (HORZ,U) = 0.000000
+Top-mute velocity for hyp moveout (m per sec) = 1500.0
+Trace temporal bottom-mute (HORZ,U) = 0
+Bottom-mute time step zero offset (HORZ,U) = 10000
+Bottom-mute moveout with offset (HORZ,U) = 0.000000
+Bottom-mute velocity for hyp moveout (m per sec) = 1500.0
+
+INNER TRACE MUTE (VERT, V) = 0
+TRACE TEMPORAL TOP_MUTE (VERT, V) = 0
+TOP-MUTE TIME AT ZERO OFFSET (VERT, V) = 0
+TOP_MUTE MOVEOUT WITH OFFSET (VERT, V) = 0.000000
+top-mute velocity for hyp moveout (m per sec) = 1500.0
+TRACE TEMPORAL BOTTOM_MUTE (VERT, V) = 0
+BTTM-MUTE TIME STEP AT ZERO OFFSET (VERT, V) = 10000
+BTTM_MUTE MOVEOUT WITH OFFSET (VERT, V) = 0.000000
+Bottom-mute velocity for hyp moveout (m per sec) = 1500.0
+
+
+
