@@ -16,39 +16,45 @@ varFileName=variable_list
 
 
 ################################
-####### DEFINE PARAMETERS ######
+#######EXTRACT PARAMETERS#######
 ################################
 ### FILE NAMES ###
-file="twt_params.update" #have to be modified by hand
+file="twt_params.update" #have to modified by hand
+fileForw="twt_params.forw"
+fileInv="twt_params.inv"
+fileShowshot="02_showshot.sh"
+fileClean="clean.sh"
+fileCopy="03_cpfile_2.sh"
+fileConvertDataHydr="06_dobs2su2segy_hydr.csh"
 ##################
 ##################
 ### A modifier ###
 ##################
-### Hydrophone parameters ###
+### Parametre hydrophone ###
 hydrDepth=5
-#############################
-### Source parameters ###
+############################
+### Parametres source ###
 sourType=1
 sourDepth=5
 #########################
-### Sea floor parameters ###
-wbDepth=60
+### Parametres sea floor###
+wbDepth=50
 sfCosAmp=0
 sfCosWlen=5
-############################
+###########################
 ### Parametres couches ###
-nlayer=4
-layerVel="2200,2500,3500,4200"
-layerDepths="160,350,520," #1. the last boundary (depth of the model) will be added automatically. NB: let the "," !!!!! #2. the first boundary is the water depth
+nlayer=5
+layerVel="2200,2500,2800,3100,3400"
+layerDepths="100,120,160,200," #1. the last boundary (depth of the model) will be added automatically. NB: let the "," !!!!! #2. the first boundary is the water depth
 ##########################
 ### Nom de la namelist ###
-namelistName="MOD7"
+namelistName="MOD8"
 ##########################
 ### Type des modeles ###
-trueModel="laye" #"none" ou "laye" ou "lens" ou "hlen" ou "hlhm" ou "cosi" ou "smoo"
-startingModel="smoo" #"none" ou "grad" ou "smoo" ou "laye"
+trueModel="oval" #"none" ou "laye" ou "lens" ou "hlen" ou "hlhm" ou "cosi" ou "smoo" ou "oval"
+startingModel="grad" #"none" ou "grad" ou "smoo" ou "laye"
 ########################
-### Parameter for smooth model ###
+### Parametre pour smooth modele ###
 demiWindow=15 #demi-fenetre en point de grille pour le modele smooth
 ####################################
 ### Parametres pour lentille ###
@@ -56,10 +62,12 @@ rayon=50
 anomalieV=400
 ################################
 ### Parametres pour le modele cosinus ### 
-#WARNING: ex: si 5 couches 4 valeurs doivent etre mises dans les tableaux
-cosampli="0,0,0"  #1. ampli > 1 for amplification and < 1 for flattening (in points) #2. si 0 cela signifie que la limite de couche restera plate
-coswvlen="5,5,5" # indiquer le nombre de periodes desirees
+#WARNING: si 5 couches 4 valeurs doivent etre mises dans les tableaux
+cosampli="0,0,0,0"  #1. ampli > 1 for amplification and < 1 de flatten (en points) #2. si 0 cela signifie que la limite de couche restera plate
+coswvlen="5,5,5,5" # indiquer le nombre de periodes desirees
 #########################################
+rayonH=200
+rayonV=30
 #gradient=""
 ########################################################################
 ########################################################################
@@ -67,12 +75,9 @@ coswvlen="5,5,5" # indiquer le nombre de periodes desirees
 
 
 
-################################
-###### EXTRACT PARAMETERS ######
-################################
-
 #put all variable names and values in variable_list ascii file
 grep -E -v "^( |$)" $file > variable_list
+
 
 ###Global Parameters => 0 to 10###
 ###Forward Modelling Parameters => 11 to 33###
@@ -106,7 +111,7 @@ echo "&$namelistName nHydr=${varValue[25]} depthHydr=$hydrDepth fileHydr=\"${var
 fileShot=\"${varValue[20]}\" modelWidth=${varValue[6]} modelDepth=${varValue[7]} fileModelP=\"${varValue[11]}\"
 fileModelS=\"${varValue[12]}\" seaDepth=$wbDepth seaVp=${varValue[22]} fileSea=\"${varValue[21]}\" dxz=${varValue[3]}
 tabLayerVp=$layerVel tabLayerDepth=$layerDepths startingModel=\"$startingModel\" trueModel=\"$trueModel\" demiWindow=$demiWindow
-rayon=$rayon anomalieV=$anomalieV cosampli=$cosampli coswvlen=$coswvlen sfCosAmp=$sfCosAmp sfCosWlen=$sfCosWlen /"> model4twist
+rayon=$rayon anomalieV=$anomalieV cosampli=$cosampli coswvlen=$coswvlen sfCosAmp=$sfCosAmp sfCosWlen=$sfCosWlen rayonH=$rayonH rayonV=$rayonV /" > model4twist
 echo "#### namelist \"$namelistName\" created ####"
 
 ####Backup namelist####
@@ -114,7 +119,7 @@ echo "&$namelistName nHydr=${varValue[25]} depthHydr=$hydrDepth fileHydr=\"${var
 fileShot=\"${varValue[20]}\" modelWidth=${varValue[6]} modelDepth=${varValue[7]} fileModelP=\"${varValue[11]}\"
 fileModelS=\"${varValue[12]}\" seaDepth=$wbDepth seaVp=${varValue[22]} fileSea=\"${varValue[21]}\" dxz=${varValue[3]}
 tabLayerVp=$layerVel tabLayerDepth=$layerDepths startingModel=\"$startingModel\" trueModel=\"$trueModel\" demiWindow=$demiWindow 
-rayon=$rayon anomalieV=$anomalieV cosampli=$cosampli coswvlen=$coswvlen sfCosAmp=$sfCosAmp sfCosWlen=$sfCosWlen /" >> model4twist.backup
+rayon=$rayon anomalieV=$anomalieV cosampli=$cosampli coswvlen=$coswvlen sfCosAmp=$sfCosAmp sfCosWlen=$sfCosWlen rayonH=$rayonH rayonV=$rayonV /" >> model4twist.backup
 echo "#### namelist backup \"$namelistName\" created ####"
 
 ####Update Fortran file####
@@ -141,5 +146,79 @@ rm init.${varValue[12]}
 echo "#### \"createTwistFiles.exe\" started ####"
 ./createTwistFiles.exe
 echo "#### \"createTwistFiles.exe\" finished ####"
+
+####Update Displaying Data File####
+sed s/'^nrecs=[0-9]*'/"nrecs=${varValue[25]}"/ $fileShowshot > sh.tmp
+mv sh.tmp $fileShowshot
+sed s/'^tstep=[0-9]*'/"tstep=${varValue[8]}"/ $fileShowshot > sh.tmp
+mv sh.tmp $fileShowshot
+sed s/'^dt=[0-9].[0-9]*'/"dt=${varValue[2]}"/ $fileShowshot > sh.tmp
+mv sh.tmp $fileShowshot
+echo "#### Script file \"02_showshot.sh\" updated ####"
+echo "NB: you have to change the shot number by hand if you want another one !"
+chmod 700 $fileShowshot
+
+####Update Data Conversion File####
+sed s/'^nrecstot=[0-9]*'/"nrecstot=${varValue[25]}"/ $fileConvertDataHydr > sh.tmp
+mv sh.tmp $fileConvertDataHydr
+sed s/'^tstep=[0-9]*'/"tstep=${varValue[8]}"/ $fileConvertDataHydr > sh.tmp
+mv sh.tmp $fileConvertDataHydr
+sed s/'^tinc=[0-9].[0-9]*'/"tinc=${varValue[2]}"/ $fileConvertDataHydr > sh.tmp
+mv sh.tmp $fileConvertDataHydr
+sed s/'^nshots=[0-9]*'/"nshots=${varValue[4]}"/ $fileConvertDataHydr > sh.tmp
+mv sh.tmp $fileConvertDataHydr
+echo "#### Script file \"06_dobs2su2segy_hydr.csh\" updated ####"
+
+#####################
+####Run TWIST 2.0####
+#####################
+
+####Create Parameter File for Forward Modelling####
+echo "#### Create Parameter File for Forward Modelling: $fileForw ####"
+cp $file $fileForw
+sed s/'^Operational mode = [0-9]'/"Operational mode = 1"/ $file > $fileForw
+sed s/'^P-wave starting model = .*'/"P-wave starting model = ${varValue[11]}"/ $fileForw > forw.tmp
+mv forw.tmp $fileForw
+sed s/'^S-wave starting model = .*'/"S-wave starting model = ${varValue[12]}"/ $fileForw > forw.tmp
+mv forw.tmp $fileForw
+cp $fileForw twt_params
+
+####Forward modelling####
+echo "#### Forward modelling started ####"
+rm T002*
+./$fileClean
+/usr/lib64/openmpi/bin/mpirun -np 8 /home/gabriel/Desktop/RESEARCH/TWIST_2.0/src_grad/mpi_version/twistps_grad_mpi .
+./$fileCopy
+chmod 700 $fileConvertDataHydr
+./$fileConvertDataHydr
+echo "#### Forward modelling finished ####"
+
+####Create Parameter File for Inversion####
+echo "#### Create Parameter File for Inversion: $fileInv ####"
+cp $file $fileInv
+sed s/'^Operational mode = [0-9]'/"Operational mode = 3"/ $file > $fileInv
+sed s/'^P-wave starting model = .*'/"P-wave starting model = init.${varValue[11]}"/ $fileInv > forw.tmp
+mv forw.tmp $fileInv
+sed s/'^S-wave starting model = .*'/"S-wave starting model = init.${varValue[12]}"/ $fileInv > forw.tmp
+mv forw.tmp $fileInv
+cp $fileInv twt_params
+
+####Inversion####
+echo "#### Inversion started ####"
+rm win*
+/usr/lib64/openmpi/bin/mpirun -np 8 /home/gabriel/Desktop/RESEARCH/TWIST_2.0/src_grad/mpi_version/twistps_grad_mpi .
+echo "#### Inversion finished ####"
+#################################################################
+
+#### Send mail to tell it finished ####
+mailx -s "~*_*~ INVERSION FINISHED ~*_*~" huot@ipgp.fr < model4twist
+#mailx adresse << EOF 
+#~s INVERSION FINISHED
+#~<! echo "Your inversion finished successfully !"
+#~.
+#EOF
+#######################################
+
+
 
 

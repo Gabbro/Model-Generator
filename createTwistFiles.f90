@@ -4,7 +4,7 @@ use create_model_init
 implicit none
 
 !-----------Variables de creation de modele (de la namelist)-------------------!
-integer, parameter            :: nLayer = 4
+integer, parameter            :: nLayer = 5
 ! WARNING: nLayer n'est pas dans la namelist (updated by script)
 integer                       :: nHydr, depthHydr                  ! hydrophones
 integer                       :: nShot, depthShot, typeShot        ! shots
@@ -19,7 +19,7 @@ integer, dimension(nLayer)    :: tabLayerDepth
 real                          :: dxz
 character(len=4)              :: startingModel, trueModel
 integer                       :: demiWindow ! demi-fenetre pour le smooth model
-integer                       :: rayon ! rayon de la lentille
+integer                       :: rayon, rayonH, rayonV ! rayon de la lentille
 real                          :: anomalieV ! anomalie de vitesse de lens
 integer, dimension(nLayer-1)  :: cosampli, coswvlen
 integer                       :: sfCosAmp, sfCosWlen
@@ -37,16 +37,16 @@ real, parameter        :: ratioVpVs = 1.75
 character(len=30)      :: initFileModP,initFileModS
 !--------------------------------------------------------!
 
-namelist/MOD7/nHydr,depthHydr,fileHydr,nShot,depthShot,typeShot,fileShot, &
+namelist/MOD8/nHydr,depthHydr,fileHydr,nShot,depthShot,typeShot,fileShot, &
               modelWidth,modelDepth,fileModelP,fileModelS, &
               seaDepth,seaVp,fileSea,dxz,tabLayerVp,tabLayerDepth, &
               startingModel,trueModel,demiWindow,rayon,anomalieV, &
-              cosampli,coswvlen,sfCosAmp,sfCosWlen
+              cosampli,coswvlen,sfCosAmp,sfCosWlen,rayonH,rayonV
 
 
 ! ouverture du fichier contenant la namelist
 open(unit=1,file="model4twist",recl=200,delim="quote",action="read")
-read(unit=1,nml=MOD7) ! lecture de la namelist
+read(unit=1,nml=MOD8) ! lecture de la namelist
 close(unit=1)
 
 !---------------Creation du fichier d hydrophones-------------------------!
@@ -97,6 +97,11 @@ else if( trueModel == "smoo" ) then
   call initSmooth(tabModeldepth,tabModelwidth,tabSeadepth,seaVp,tabLayerVp, &
                   tabLayerDepth,fileModelP,fileModelS,ratioVpVs,demiWindow)
   print *, "#### Smoothed true model created successfully ####"
+else if( trueModel == "oval") then
+  call initOval(tabModeldepth,tabModelwidth,tabSeadepth,seaVp,tabLayerVp, &
+                  tabLayerDepth,fileModelP,fileModelS,ratioVpVs,rayonH, &
+                  rayonV,anomalieV)
+  print *, "#### Oval model created successfully ####"
 else
   print *, "WARNING: no true model created !"
 end if
