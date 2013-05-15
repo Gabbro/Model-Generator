@@ -43,19 +43,19 @@ sfCosAmp=0
 sfCosWlen=5
 ###########################
 ### Parametres couches ###
-nlayer=5
-layerVel="2200,2500,2800,3100,3400"
-layerDepths="100,120,160,200," #1. the last boundary (depth of the model) will be added automatically. NB: let the "," !!!!! #2. the first boundary is the water depth
+nlayer=7
+layerVel="2200,2500,2800,3100,3400,5000,8000"
+layerDepths="100,120,160,200,300,500," #1. the last boundary (depth of the model) will be added automatically. NB: let the "," !!!!! #2. the first boundary is the water depth
 ##########################
 ### Nom de la namelist ###
 namelistName="MOD8"
 ##########################
 ### Type des modeles ###
-trueModel="oval" #"none" ou "laye" ou "lens" ou "hlen" ou "hlhm" ou "cosi" ou "smoo" ou "oval"
-startingModel="grad" #"none" ou "grad" ou "smoo" ou "laye"
+trueModel="ovhm" #"none" ou "laye" ou "lens" ou "hlen" ou "hlhm" ou "cosi" ou "smoo" ou "oval" ou "ovhm"
+startingModel="laye" #"none" ou "grad" ou "smoo" ou "laye"
 ########################
 ### Parametre pour smooth modele ###
-demiWindow=15 #demi-fenetre en point de grille pour le modele smooth
+demiWindow=40 #demi-fenetre en point de grille pour le modele smooth
 ####################################
 ### Parametres pour lentille ###
 rayon=50
@@ -63,11 +63,11 @@ anomalieV=400
 ################################
 ### Parametres pour le modele cosinus ### 
 #WARNING: si 5 couches 4 valeurs doivent etre mises dans les tableaux
-cosampli="0,0,0,0"  #1. ampli > 1 for amplification and < 1 de flatten (en points) #2. si 0 cela signifie que la limite de couche restera plate
-coswvlen="5,5,5,5" # indiquer le nombre de periodes desirees
+cosampli="0,0,0,0,0,0"  #1. ampli > 1 for amplification and < 1 de flatten (en points) #2. si 0 cela signifie que la limite de couche restera plate
+coswvlen="5,5,5,5,5,5" # indiquer le nombre de periodes desirees
 #########################################
 rayonH=200
-rayonV=30
+rayonV=10
 #gradient=""
 ########################################################################
 ########################################################################

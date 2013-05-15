@@ -4,7 +4,7 @@ use create_model_init
 implicit none
 
 !-----------Variables de creation de modele (de la namelist)-------------------!
-integer, parameter            :: nLayer = 5
+integer, parameter            :: nLayer = 7
 ! WARNING: nLayer n'est pas dans la namelist (updated by script)
 integer                       :: nHydr, depthHydr                  ! hydrophones
 integer                       :: nShot, depthShot, typeShot        ! shots
@@ -97,11 +97,16 @@ else if( trueModel == "smoo" ) then
   call initSmooth(tabModeldepth,tabModelwidth,tabSeadepth,seaVp,tabLayerVp, &
                   tabLayerDepth,fileModelP,fileModelS,ratioVpVs,demiWindow)
   print *, "#### Smoothed true model created successfully ####"
-else if( trueModel == "oval") then
+else if( trueModel == "oval" ) then
   call initOval(tabModeldepth,tabModelwidth,tabSeadepth,seaVp,tabLayerVp, &
                   tabLayerDepth,fileModelP,fileModelS,ratioVpVs,rayonH, &
                   rayonV,anomalieV)
   print *, "#### Oval model created successfully ####"
+else if( trueModel == "ovhm" ) then
+  call initHOvalHMedia(tabModeldepth,tabModelwidth,tabSeadepth,seaVp, &
+                  tabLayerVp,tabLayerDepth,fileModelP,fileModelS,ratioVpVs, &
+                  rayonH,rayonV,anomalieV)
+  print *, "#### Oval in homogeneous media created successfully ####"
 else
   print *, "WARNING: no true model created !"
 end if

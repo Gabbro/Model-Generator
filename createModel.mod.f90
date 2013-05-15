@@ -504,4 +504,82 @@ module create_model_init
 
   end subroutine initOval
 
+
+!-----------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
+
+  subroutine initHOvalHMedia(tabModeldepth,tabModelwidth,tabSeadepth, seaVp, &
+                          tabLayerVp,tabLayerDepth,fileModelP,fileModelS, &
+                          ratioVpVs,rayonH,rayonV,anomalieV)
+
+    !-----------------------------Variables recues-----------------------------!
+    real , dimension(:), intent(in)     :: tabModelwidth, tabModeldepth
+    integer, dimension(:), intent(in)   :: tabSeadepth
+    character(len=30), intent(in)       :: fileModelP, fileModelS
+    real, dimension(:), intent(in)      :: tabLayerVp
+    integer, dimension(:), intent(in)   :: tabLayerDepth
+    real, intent(in)                    :: seaVp, ratioVpVs
+    integer, intent(in)                 :: rayonH, rayonV
+    real, intent(in)                    :: anomalieV
+    !--------------------------------------------------------------------------!
+
+    !---------------------Variables internes-----------------------------------!
+    real, dimension(:), allocatable   :: tabVp, tabVs
+    integer                           :: modelWidth, modelDepth
+    real                              :: dv, distance, Vplentille
+    real                              :: dxz
+    integer                           :: centerx, centerz, nLayer
+    !--------------------------------------------------------------------------!
+
+    nLayer = size(tabLayerVp)
+    dxz = tabModeldepth(2)
+    modelDepth = size(tabModeldepth)
+    modelWidth = size(tabModelwidth)
+    allocate(tabVp(modelDepth),tabVs(modelDepth))
+
+    centerx = modelWidth/2
+    centerz = tabSeadepth(centerx) + (modelDepth-tabSeadepth(centerx))/2
+    dv = ( tabLayerVp(size(tabLayerVp)) - tabLayerVp(1) )/ &
+             ( 1.0*modelDepth - 1.0*tabSeadepth(centerx) - 1.0)
+
+    open(unit=1,file=trim(fileModelP),status="replace",action="write")
+    open(unit=2,file=trim(fileModelS),status="replace",action="write")
+
+    do j=1,modelWidth
+      tabVp(1:tabSeadepth(j)) = seaVp
+      tabVp(tabSeadepth(j)+1:tabLayerDepth(1)) = tabLayerVp(1)
+      do k=2,nLayer
+        tabVp(tabLayerDepth(k-1)+1:tabLayerDepth(k)) = tabLayerVp(k)
+      end do
+      tabVs(:) = tabVp(:)/ratioVpVs
+      tabVs(1:tabSeaDepth(j)) = 0.0
+      do i=1,modelDepth
+        distance = sqrt((tabModelwidth(j)-dxz*centerx)**2/((dxz*rayonH)**2) + &
+        (tabModeldepth(i)-dxz*centerz)**2/((dxz*rayonV)**2))
+        if( distance > 1 ) then
+          write(unit=1,fmt="(F0.5,a,F0.5,a,F0.5)") tabModelwidth(j), &
+          " ",tabModeldepth(i)," ",tabVp(i)
+          write(unit=2,fmt="(F0.5,a,F0.5,a,F0.5)") tabModelwidth(j), &
+          " ",tabModeldepth(i)," ",tabVs(i)
+        else
+          Vplentille = anomalieV+tabVp(centerz)
+          write(unit=1,fmt="(F0.5,a,F0.5,a,F0.5)") tabModelwidth(j), &
+          " ",tabModeldepth(i)," ",Vplentille
+          write(unit=2,fmt="(F0.5,a,F0.5,a,F0.5)") tabModelwidth(j), &
+          " ",tabModeldepth(i)," ",Vplentille/ratioVpVs
+        end if
+      end do
+    end do
+
+    close(unit=1)
+    close(unit=2)
+
+  end subroutine initHOvalHMedia
+
+!-----------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
+
+
 end module create_model_init
