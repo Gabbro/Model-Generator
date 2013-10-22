@@ -4,43 +4,43 @@ Operational mode = 1
  Geometry
 Streamer (1), OBC / VSP(2) = 1
 
-Timestep increment (s) = 0.004
-Grid spacing (m)  = 25
+Timestep increment (s) = 0.001
+Grid spacing (m) = 12.5
 NUM_SHOTS = 1
-SHOT_INCR (grid pts) = -12
-Model width (in grid pts.) = 1001
-Model depth (in grid pts.) = 301
-No. of recorded timesteps = 1500
-No. of iterations = 100
+SHOT_INCR (grid pts) = -20
+Model width (in grid pts.) = 4001
+Model depth (in grid pts.) = 801
+No. of recorded timesteps = 10000
+No. of iterations = 2
 Padding = 0
 
  Forward modelling parameters 
-P-wave starting model = 2d_vp.vm
-S-wave starting model = 2d_vs.vm
+P-wave starting model = CGGV20_VEL_MOD_P.vm
+S-wave starting model = CGGV20_VEL_MOD_S.vm
 
 Surface type  = 1
-Source type  = 4
-Source file = source.mono
-Dominant source freq. (Hz)= 4.0
+Source type  = 1
+Source file = f.source.deghosted.taper.min
+Dominant source freq. (Hz)= 8.0
 Source temporal shift = 0
 Source polarity reversal = 0
 
 Rcvr-depth pairs (grid pts.) = hydr_file.hydr
 Shot-depth pairs (grid pts.) = shot_file.shot
-Survey WB-depth pairs file = sea_depth_file.sea
-Survey Vp water = 1500
+Survey WB-depth pairs file = CGGV20_SEA_DEPTH.sea
+Survey Vp water = 1534.6
 
-FIRST_SHOT_GLOBAL_XCOORD (grid pts.) = 350
-FIRST_OBC_RCVR_GLOBAL_XCOORD (grid pts.) = -1
-NUM_OBC_RCVRS = 300
-OBC_RCVR_INCR (grid pts.) = -1
+FIRST_SHOT_GLOBAL_XCOORD (grid pts.) = 2230
+FIRST_OBC_RCVR_GLOBAL_XCOORD (grid pts.) = 8
+NUM_OBC_RCVRS = 1200
+OBC_RCVR_INCR (grid pts.) = 1
 
 Use expanding box strategy = 0
 Record wavefield snapshots = 1
 
 Timestep of first snapshot = 200
-Time increment for snapshots = 100
-Number of snapshots = 10
+Time increment for snapshots = 200
+Number of snapshots = 48
 
 Output hydrophone component = 0
 
@@ -51,16 +51,16 @@ Inversion component(s) (1P 2Z 3XZ) = 1
 Boundary storage io option = 0
 Number of blocks for io option = 7
 
-Inversion type = 5
-P & S linked = 0
+Inversion type = 1
+P & S linked = 1
 Commutation P to S = 10 
 Gradient type  = 1
 Gradient dimension  = 2 
 
-Gradient top cut-off (grid pts.) = 17
-Gradient top taper (grid pts.) = 4
-Gradient bottom cut-off (grid pts.) = 5
-Gradient bottom taper (grid pts.) = 4
+Gradient top cut-off (grid pts.) = 150
+Gradient top taper (grid pts.) = 20
+Gradient bottom cut-off (grid pts.) = 10
+Gradient bottom taper (grid pts.) = 10
 Gradient left cut-off (grid pts.) = 10
 Gradient left taper (grid pts.) = 10
 Gradient right cut-off (grid pts.) = 10

@@ -4,7 +4,7 @@ use create_model_init
 implicit none
 
 !-----------Variables de creation de modele (de la namelist)-------------------!
-integer, parameter            :: nLayer = 7
+integer, parameter            :: nLayer = 2
 ! WARNING: nLayer n'est pas dans la namelist (updated by script)
 integer                       :: nHydr, depthHydr                  ! hydrophones
 integer                       :: nShot, depthShot, typeShot        ! shots
@@ -50,17 +50,32 @@ read(unit=1,nml=MOD8) ! lecture de la namelist
 close(unit=1)
 
 !---------------Creation du fichier d hydrophones-------------------------!
-call createFileHydr(fileHydr,nHydr,depthHydr)
+if ( depthHydr >= 0 ) then
+  call createFileHydr(fileHydr,nHydr,depthHydr)
+  print *, "#### Depth hydrophone file created successfully ####"
+else
+  print *, "WARNING: no depth hydrophone file created !"
+end if
 !-------------------------------------------------------------------------!
 
 !---------------Creation du fichier de shots------------------------------!
-call createFileShot(fileShot,nShot,depthShot,typeShot)
+if ( depthShot >= 0 ) then
+  call createFileShot(fileShot,nShot,depthShot,typeShot)
+  print *, "#### Depth shot file created successfully ####"
+else
+  print *, "WARNING: no depth shot file created !"
+end if
 !-------------------------------------------------------------------------!
 
 
 !----------Creation du fichier de profondeur de l eau---------------------!
-allocate(tabSeadepth(modelWidth))
-call createFileSea(fileSea,seaDepth,sfCosAmp,sfCosWlen,tabSeadepth)
+if ( seaDepth >= 0 ) then
+  allocate(tabSeadepth(modelWidth))
+  call createFileSea(fileSea,seaDepth,sfCosAmp,sfCosWlen,tabSeadepth)
+  print *, "#### Sea depth file created successfully ####"
+else
+  print *, "WARNING: no sea depth file created !"
+end if
 !-------------------------------------------------------------------------!
 
 !---------------Creation des modeles de vitesse P et S--------------------!
